@@ -24,8 +24,8 @@ function ding_wayf_menu() {
   $items = array();
 // config page
   $items['admin/config/ding/wayf'] = array(
-    'title' => t('WAYF'),
-    'description' => t('Configure WAYF'),
+    'title' => 'WAYF',
+    'description' => 'Configure WAYF',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('ding_wayf_admin_settings_form'),
     'access arguments' => array('configure wayf'),
@@ -33,16 +33,16 @@ function ding_wayf_menu() {
   );
 // login page
   $items['wayf/login'] = array(
-    'title' => t('Logon to the site'),
-    'description' => t('Provides WAYF login.'),
+    'title' => 'Logon to the site',
+    'description' => 'Provides WAYF login.',
     'page callback' => 'ding_wayf_redirect_login',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
 // accept page
   $items['wayf/accept'] = array(
-    'title' => t('WAYF_ACCEPT'),
-    'description' => t('Provides WAYF login.'),
+    'title' => 'WAYF_ACCEPT',
+    'description' => 'Provides WAYF login.',
     'page callback' => 'ding_wayf_accept',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
@@ -51,8 +51,8 @@ function ding_wayf_menu() {
   return $items;
 }
 
-/** \brief accept page callback
- * 
+/**
+ * Accept page callback
  */
 function ding_wayf_accept() {
   // clear messages - this one comes via login-form,
@@ -66,18 +66,19 @@ function ding_wayf_accept() {
   }
 }
 
-/** Implements hook_init
+/**
+ * Implements hook_init()
  *
  * special case; user was authenticated with wayf, but for some reason
  * not with drupal - maybe user aborted while logging in.
  * make sure SESSION variables are removed, and user is logged out of wayf
- * 
- * @global type $user 
+ *
+ * @global type $user
  */
 function ding_wayf_init() {
   global $user;
   if (arg(0) != 'wayf') {
-    if ($user->uid == 0) {
+    if ( user_is_anonymous() ) {
       if (isset($_SESSION['accept_wayf'])) {
         unset($_SESSION['accept_wayf']);
         ding_wayf_user_logout();
@@ -86,10 +87,12 @@ function ding_wayf_init() {
   }
 }
 
-/** \brief Login a wayf user, as thay where logged in by the library system.
+/**
+ * Login a wayf user, as thay where logged in by the library system.
+ *
  * easy solution; fake form_state and submit user_login form. In that way
  * ding_user handles user-login as always.
- * 
+ *
  * pre; user is authenticated via wayf or we wouldn't be here
  */
 function ding_wayf_login($authentication_attributes, $notify_by_mail = NULL) {
@@ -99,7 +102,7 @@ function ding_wayf_login($authentication_attributes, $notify_by_mail = NULL) {
     // get form_state from provider
     $form_state = ding_provider_invoke('wayf', 'login_creds', $authentication_attributes, $notify_by_mail);
 
-// submit login form
+    // submit login form
     drupal_form_submit('user_login_block', $form_state);
     $errors = form_get_errors();
     if (!empty($errors)) {
@@ -111,8 +114,9 @@ function ding_wayf_login($authentication_attributes, $notify_by_mail = NULL) {
   }
 }
 
-/** Implements hook_form_FORM_ID_alter (user_login)
- * 
+/**
+ * Implements hook_form_FORM_ID_alter (user_login)
+ *
  * add wayf login block to form['actions']
  */
 function ding_wayf_form_user_login_alter(&$form, &$form_state) {
@@ -121,9 +125,10 @@ function ding_wayf_form_user_login_alter(&$form, &$form_state) {
   );
 }
 
-/** \brief Custom render function for ding_wayf_login block
- * 
- * @return html; the rendered block 
+/**
+ * Custom render function for ding_wayf_login block
+ *
+ * @return html; the rendered block
  */
 function ding_wayf_render_login_block() {
   $block = block_load('ding_wayf', 'login');
@@ -131,7 +136,7 @@ function ding_wayf_render_login_block() {
 }
 
 /**
- * Implements hook_form_alter() (user_login, user_login_block). 
+ * Implements hook_form_alter() (user_login, user_login_block).
  * add hidden field to set authentication provider
  * add validate handler for wayf login
  */
@@ -171,11 +176,12 @@ function ding_wayf_form_alter(&$form, $form_state, $form_id) {
  */
 function ding_wayf_redirect_login() {
   global $user;
-// Load configuration.
+
+  // Load configuration.
   $config = variable_get('ding_wayf', NULL);
   if (!$config) {
-// The configuration have not be created yet, so send user to the front page
-// with an error message.
+    // The configuration have not be created yet, so send user to the front page
+    // with an error message.
     drupal_set_message(t('The WAYF login module is not configured yet, plase contact the site administrator.', array(), array('context' => 'ding_wayf')), 'error', FALSE);
     ding_wayf_redirect_user('<front>');
   }
@@ -196,23 +202,22 @@ function ding_wayf_redirect_login() {
     if ($saml->isAuthenticated()) {
       $wayf_data = $saml->getAttributes();
       $authentication_attributes = ding_wayf_get_required_attributes($wayf_data, $simplesaml['attributes']);
-// log user in
+      // log user in
       ding_wayf_login($authentication_attributes);
     }
     else {
-// Redirect the user to the WAYF login page.
+    // Redirect the user to the WAYF login page.
       $saml->requireAuth();
-
-      //   pjo NOTE for nemlogin; you can give idp as parameter on login 
-      //   depending on which idp is preferred e.g      
-      //$saml->requireAuth(array('saml:idp' => 'https://testbridge.wayf.dk'));
-      //saml->requireAuth(array('saml:idp' => 'https://nemlogin.wayf.dk'));
-      //$saml->requireAuth(array('saml:idp' => 'https://wayf.wayf.dk'));
-      //   remember that identity provider must be set in metadata file
+      // NOTE for nemlogin: you can give idp as parameter on login
+      // depending on which idp is preferred e.g
+      // $saml->requireAuth(array('saml:idp' => 'https://testbridge.wayf.dk'));
+      // $saml->requireAuth(array('saml:idp' => 'https://nemlogin.wayf.dk'));
+      // $saml->requireAuth(array('saml:idp' => 'https://wayf.wayf.dk'));
+      // remember that identity provider must be set in metadata file
     }
   }
   else {
-// Send the user back to her context or use the fallback URL.
+    // Send the user back to her context or use the fallback URL.
     ding_wayf_redirect_user($simplesaml['redirect']);
   }
 }
@@ -235,8 +240,10 @@ function ding_wayf_redirect_user($url) {
   drupal_goto($url);
 }
 
-/** Implements hook_user_delete
- *  log user out of simplesaml
+/**
+ * Implements hook_user_delete()
+ *
+ * log user out of simplesaml
  */
 function ding_wayf_user_delete($account) {
   ding_wayf_user_logout($account);
@@ -269,9 +276,9 @@ function ding_wayf_user_logout($account = NULL, $origin = NULL) {
       if (isset($origin)) {
         $url = $base_url . '/' . $origin;
       }
-// we pass simplesaml the url to return to -
-// you can pass simplesaml::logout an array of values ['ReturnTo', 'ReturnCallback'] etc.
-// if only a string is passed it will be handled as 'ReturnTo'
+      // We pass simplesaml the url to return to -
+      // you can pass simplesaml::logout an array of values ['ReturnTo', 'ReturnCallback'] etc.
+      // if only a string is passed it will be handled as 'ReturnTo'
       $saml->logout($url);
     }
   }

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains ding_wayf administration form
+ */
 
 function ding_wayf_admin_settings_form() {
   $form = array(

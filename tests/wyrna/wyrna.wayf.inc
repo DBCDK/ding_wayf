@@ -1,9 +1,13 @@
 <?php
+/**
+ * @file
+ * ding_wayf/tests/wyrna/wyrna.wayf.inc
+ */
 
-function wyrna_wayf_authenticate($name, $wayfid) { 
-  $return = array('success'=>FALSE);
-  
-  if( DingWayfUser::instance()->loginWayf($name, $wayfid) ){
+function wyrna_wayf_authenticate($name, $wayfid) {
+  $return = array('success' => FALSE);
+
+  if ( DingWayfUser::instance()->loginWayf($name, $wayfid) ) {
   $return['creds'] = array(
       'name' => $name,
       'pass' => $wayfid,
@@ -28,9 +32,9 @@ function wyrna_wayf_delete($name) {
 }
 
 /**
- * 
+ *
  */
-function wyrna_wayf_accept_form(){
+function wyrna_wayf_accept_form() {
   return '_wyrna_wayf_accept_form';
 }
 
@@ -65,14 +69,14 @@ function _wyrna_wayf_accept_form() {
       '#value' => t('continue', array(), array('context' => 'ding_wayf')),
     ),
   );
-  
+
   $form['#validate'][] = 'wyrna_accept_form_validate';
-   $form['#submit'][] = 'wyrna_accept_form_submit';  
-  
+   $form['#submit'][] = 'wyrna_accept_form_submit';
+
   return $form;
 }
 
-function wyrna_accept_form_submit($form, $form_state){
+function wyrna_accept_form_submit($form, $form_state) {
   if ($form_state['clicked_button']['#name'] == 'abort') {
     ding_wayf_user_logout(NULL, 'user');
   }
@@ -88,14 +92,14 @@ function wyrna_wayf_login_creds($authentication_attributes, $notify_by_mail) {
   if (isset($notify_by_mail)) {
     $form_state['mail_me'] = $notify_by_mail;
   }
-  
+
   return $form_state;
 }
 
 /** \brief validation handler for accept_form
  *
  * @param type $form
- * @param type $form_state 
+ * @param type $form_state
  */
 function wyrna_accept_form_validate($form, &$form_state) {
 
@@ -166,10 +170,10 @@ class DingWayfUser {
   protected $validUsers = array();
 
   private function __construct() {
-    
+
     variable_set('wyrna_users',
-        array('eduPersonTargetedID' => 'WAYF-1234567890', 'mail' => 'dummy@dbc.dk',));
-    
+        array('eduPersonTargetedID' => 'WAYF-1234567890', 'mail' => 'dummy@dbc.dk', ));
+
     $this->validUsers = variable_get('wyrna_users', array());
   }
 

@@ -19,8 +19,7 @@ class WyrnaTestCase extends DrupalWebTestCase {
   }
 
   public function setUp() {
-   // parent::setUp(array('wyrna', 'ding_wayf', 'ding_provider'));
-    parent::setUp(array('wyrna','ding_user', 'ding_wayf', 'bibdk_test_provider'));
+    parent::setUp(array('wyrna', 'ding_user', 'ding_wayf', 'bibdk_test_provider'));
   }
 
   public function testWyrna() {
@@ -112,33 +111,33 @@ class DingWyafTestCase extends DrupalWebTestCase {
     $this->assertText(t('Log out'), t('User redirected to user profile page.'));
     $this->drupalLogout();
   }
-  
+
   private function testWayfAcceptPage() {
     $ss = new SimpleSAML_Auth_Simple('default-sp');
-    SimpleSAML_Auth_Simple::setAttributes(array('eduPersonTargetedID' => array('WAYF-1234567890'), 'mail' => array('dummy@dbc.dk'),));
+    SimpleSAML_Auth_Simple::setAttributes(array('eduPersonTargetedID' => array('WAYF-1234567890'), 'mail' => array('dummy@dbc.dk'), ));
     $this->drupalGet('wayf/login');
     $this->assertUrl('wayf/accept');
   }
-  
-  private function testWayfAbort(){
+
+  private function testWayfAbort() {
     $ss = new SimpleSAML_Auth_Simple('default-sp');
-    SimpleSAML_Auth_Simple::setAttributes(array('eduPersonTargetedID' => array('WAYF-1234567890'), 'mail' => array('dummy@dbc.dk'),));
+    SimpleSAML_Auth_Simple::setAttributes(array('eduPersonTargetedID' => array('WAYF-1234567890'), 'mail' => array('dummy@dbc.dk'), ));
     $this->drupalGet('wayf/login');
     $this->assertUrl('wayf/accept', array(), 'current page is accept form');
     $this->drupalPost(NULL, NULL, t('abort'));
     $this->assertUrl('user', array(), 'Redirected to user page.');
-  }  
+  }
 
   private function testWayfLogin() {
     $ss = new SimpleSAML_Auth_Simple('default-sp');
-    SimpleSAML_Auth_Simple::setAttributes(array('eduPersonTargetedID' => array('WAYF-1234567890'), 'mail' => array('dummy@dbc.dk'),));
+    SimpleSAML_Auth_Simple::setAttributes(array('eduPersonTargetedID' => array('WAYF-1234567890'), 'mail' => array('dummy@dbc.dk'), ));
     $provider = DingWayfUser::instance();
     $provider->bindWayf('dummy@dbc.dk', 'WAYF-1234567890');
     $this->drupalGet('wayf/login');
-    $this->assertUrl('wayf/accept', array(), 'current page is accept form');  
+    $this->assertUrl('wayf/accept', array(), 'current page is accept form');
     $edit = array();
     $edit['accept'] = TRUE;
-    $this->drupalPost(NULL, $edit, t('continue'));    
+    $this->drupalPost(NULL, $edit, t('continue'));
     $this->assertText(t('Log out'), t('User is logged in.'));
   }
 }
@@ -159,27 +158,27 @@ class DingWayfUnitTestCase extends DrupalUnitTestCase {
   }
 
   public function testExtractData() {
-    $data = array('urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234',);
+    $data = array('urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234', );
     $field = 'CPR';
     $expected = '0708741234';
     $result = ding_wayf_extract_data($data, $field);
-    $this->assertEqual($result, $expected, t('"@result" found as field "@field" in "@data"', array('@field' => $field, '@data' => $data[0], '@result' => $result,)));
+    $this->assertEqual($result, $expected, t('"@result" found as field "@field" in "@data"', array('@field' => $field, '@data' => $data[0], '@result' => $result, )));
 
-    $data = array('urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234',);
+    $data = array('urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234', );
     $field = 'dk';
     $expected = 'CPR:0708741234';
     $result = ding_wayf_extract_data($data, $field);
-    $this->assertEqual($result, $expected, t('"@result" found as field "@field" in "@data"', array('@field' => $field, '@data' => $data[0], '@result' => $result,)));
+    $this->assertEqual($result, $expected, t('"@result" found as field "@field" in "@data"', array('@field' => $field, '@data' => $data[0], '@result' => $result, )));
 
     // field not existing
-    $data = array('urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234',);
+    $data = array('urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234', );
     $field = 'garbage';
     $expected = '';
     $result = ding_wayf_extract_data($data, $field);
     $this->assertEqual($result, $expected, t('Nothing found as field "@field" in "@data"', array('@field' => $field, '@data' => $data[0])));
 
     // empty/unspecified field
-    $data = array('urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234',);
+    $data = array('urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234', );
     $expected = 'urn:mace:terena.org:schac:personalUniqueID:dk:CPR:0708741234';
     $result = ding_wayf_extract_data($data);
     $this->assertEqual($result, $expected, t('Extracted all data cause no field was specified'));
@@ -234,7 +233,7 @@ class DingWayfUnitTestCase extends DrupalUnitTestCase {
     $result = ding_wayf_regex_line($path);
     $this->assertEqual($result, $expected_pattern, 'String with slash and wildcard transformed correctly.');
   }
-} 
+}
 
 class DingWayfRequirementsTestCase extends DrupalWebTestCase {
   private $https;
