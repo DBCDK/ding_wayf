@@ -126,6 +126,7 @@ function ding_wayf_login($authentication_attributes, $notify_by_mail = NULL) {
 function ding_wayf_form_user_login_alter(&$form, &$form_state) {
   $form['actions']['wayf_login'] = array(
     '#markup' => ding_wayf_render_login_block(),
+    '#weight' => 100,
   );
 }
 
