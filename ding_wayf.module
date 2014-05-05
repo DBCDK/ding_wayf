@@ -55,6 +55,7 @@ function ding_wayf_menu() {
  *
  */
 function ding_wayf_accept() {
+  drupal_get_messages();
   // add an accept form if provider implements it
   if (ding_provider_implements('wayf', 'accept_form')) {
     $form = ding_provider_invoke('wayf', 'accept_form');
