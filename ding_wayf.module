@@ -345,13 +345,15 @@ function ding_wayf_block_view($delta) {
       if ($wayf) {
         $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
         $logo_path .= '/img/wayf.png';
+        $logo_alt_text_wayf = t('logo_alt_text_wayf', array(), array('context' => 'ding_wayf'));
         $block['content'] .=
-            l('<img src="' . $logo_path . '" alt="wayf_logo"/>', 'wayf/login', array('html' => TRUE, 'attributes' => array('class' => 'link-ding-wayf-wayf-login'), 'query' => array('idp' => 'wayf', drupal_get_destination())));
+            l('<img src="' . $logo_path . '" alt="' . $logo_alt_text_wayf . '"/>', 'wayf/login', array('html' => TRUE, 'attributes' => array('class' => 'link-ding-wayf-wayf-login'), 'query' => array('idp' => 'wayf', drupal_get_destination())));
       }
       if ($nemlogin) {
         $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
         $logo_path .= '/img/nemid_logo.png';
-        $block['content'] .= l('<img src="' . $logo_path . '" alt="nemid_logo"/>', 'wayf/login', array('html' => TRUE, 'attributes' => array('class' => 'link-ding-wayf-wayf-login'), 'query' => array('idp' => 'nemlogin', drupal_get_destination())));
+        $logo_alt_text_nemid = t('logo_alt_text_nemid', array(), array('context' => 'ding_wayf'));
+        $block['content'] .= l('<img src="' . $logo_path . '" alt="' . $logo_alt_text_nemid . '"/>', 'wayf/login', array('html' => TRUE, 'attributes' => array('class' => 'link-ding-wayf-wayf-login'), 'query' => array('idp' => 'nemlogin', drupal_get_destination())));
       }
       if ($wayf or $nemlogin ) {
         $block['content'] .=  '</div>';
