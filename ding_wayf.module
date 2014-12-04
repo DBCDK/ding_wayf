@@ -349,7 +349,7 @@ function ding_wayf_block_view($delta) {
       }
 
       if ( $wayf or $nemlogin ) {
-        $block['content'] .= '<div class=ding-wayf-logon-block> <span class = ding-wayf-logoninfo>' . t('Log in to WAYF or NemId') . '</span>';
+        $block['content'] .= '<div class=ding-wayf-logon-block> <span class = ding-wayf-logoninfo>';
       }
       
       if ($nemlogin) {
