@@ -340,7 +340,7 @@ function ding_wayf_block_view($delta) {
       $wayf = isset($config['wayflogin']) ? $config['wayflogin'] : FALSE;
       $nemlogin = isset($config['nemlogin']) ? $config['nemlogin'] : FALSE;
       if ( $wayf or $nemlogin ) {
-        $block['content'] .= '<div class=ding-wayf-logon-block> <span class = ding-wayf-logoninfo>' . t('Log in to WAYF or NemId') . '</span>';
+        $block['content'] .= '<div class="ding-wayf-logon-block"> <div class="ding-wayf-logoninfo">' . t('Log in to WAYF or NemId') . '</div>';
       }
       if ($wayf) {
         $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
