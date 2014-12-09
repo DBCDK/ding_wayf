@@ -22,7 +22,7 @@ function ding_wayf_permission() {
  */
 function ding_wayf_menu() {
   $items = array();
-// config page
+  // config page
   $items['admin/config/ding/wayf'] = array(
     'title' => t('WAYF'),
     'description' => t('Configure WAYF'),
@@ -31,7 +31,7 @@ function ding_wayf_menu() {
     'access arguments' => array('configure wayf'),
     'file' => 'includes/ding_wayf.admin.inc',
   );
-// login page
+  // login page
   $items['wayf/login'] = array(
     'title' => t('Logon to the site'),
     'description' => t('Provides WAYF login.'),
@@ -39,7 +39,7 @@ function ding_wayf_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-// accept page
+  // accept page
   $items['wayf/accept'] = array(
     'title' => t('WAYF_ACCEPT'),
     'description' => t('Provides WAYF login.'),
@@ -103,7 +103,7 @@ function ding_wayf_login($authentication_attributes, $notify_by_mail = NULL) {
     // get form_state from provider
     $form_state = ding_provider_invoke('wayf', 'login_creds', $authentication_attributes, $notify_by_mail);
 
-// submit login form
+    // submit login form
     drupal_form_submit('user_login_block', $form_state);
     $errors = form_get_errors();
     if (!empty($errors)) {
@@ -144,11 +144,11 @@ function ding_wayf_form_alter(&$form, $form_state, $form_id) {
   switch ($form_id) {
     case 'user_login':
     case 'user_login_block':
-// option to set authentication provider for ding user (@see ding_user_user_login_validate)
+      // option to set authentication provider for ding user (@see ding_user_user_login_validate)
       $form['authentication_provider'] = array(
         '#type' => 'hidden',
       );
-// add a validation handler (if provider implements it)
+      // add a validation handler (if provider implements it)
       $provider = ding_provider_get_provider_module_name('wayf');
       if (isset($provider)) {
         $function = $provider . '_wayf_validate';
@@ -194,7 +194,7 @@ function ding_wayf_redirect_login() {
     }
   }
   else {
-// Send the user back to her context or use the fallback URL.
+    // Send the user back to her context or use the fallback URL.
     ding_wayf_redirect_user();
   }
 }
@@ -334,29 +334,36 @@ function ding_wayf_block_view($delta) {
   $block = array('content' => '');
   if ($delta == 'login') {
     global $user;
-// Only show login link for anon. users.
+    // Only show login link for anon. users.
     if ($user->uid == 0) {
       $config = variable_get('ding_wayf', NULL);
       $wayf = isset($config['wayflogin']) ? $config['wayflogin'] : FALSE;
       $nemlogin = isset($config['nemlogin']) ? $config['nemlogin'] : FALSE;
-      if ( $wayf or $nemlogin ) {
-        $block['content'] .= '<div class=ding-wayf-logon-block> <span class = ding-wayf-logoninfo>' . t('Log in to WAYF or NemId') . '</span>';
+      if ($wayf or $nemlogin) {
+        $block['content'] .= '<div class="ding-wayf-logon-block"> <div class="ding-wayf-logoninfo">' . t('Log in to WAYF or NemId') . '</div>';
       }
       if ($wayf) {
         $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
-        $logo_path .= '/img/wayf.png';
+        $logo_path .= '/img/in_use/wayf-logo.png';
         $logo_alt_text_wayf = t('logo_alt_text_wayf', array(), array('context' => 'ding_wayf'));
-        $block['content'] .=
-            l('<img src="' . $logo_path . '" alt="' . $logo_alt_text_wayf . '"/>', 'wayf/login', array('html' => TRUE, 'attributes' => array('class' => 'link-ding-wayf-wayf-login'), 'query' => array('idp' => 'wayf', drupal_get_destination())));
+        $block['content'] .= l('<img src="' . $logo_path . '" alt="' . $logo_alt_text_wayf . '"/>', 'wayf/login', array(
+          'html' => TRUE,
+          'attributes' => array('class' => 'link-ding-wayf-wayf-login'),
+          'query' => array('idp' => 'wayf', drupal_get_destination())
+        ));
       }
       if ($nemlogin) {
         $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
         $logo_path .= '/img/nemid_logo.png';
         $logo_alt_text_nemid = t('logo_alt_text_nemid', array(), array('context' => 'ding_wayf'));
-        $block['content'] .= l('<img src="' . $logo_path . '" alt="' . $logo_alt_text_nemid . '"/>', 'wayf/login', array('html' => TRUE, 'attributes' => array('class' => 'link-ding-wayf-wayf-login'), 'query' => array('idp' => 'nemlogin', drupal_get_destination())));
+        $block['content'] .= l('<img src="' . $logo_path . '" alt="' . $logo_alt_text_nemid . '"/>', 'wayf/login', array(
+          'html' => TRUE,
+          'attributes' => array('class' => 'link-ding-wayf-wayf-login'),
+          'query' => array('idp' => 'nemlogin', drupal_get_destination())
+        ));
       }
-      if ($wayf or $nemlogin ) {
-        $block['content'] .=  '</div>';
+      if ($wayf or $nemlogin) {
+        $block['content'] .= '</div>';
       }
     }
   }
@@ -389,6 +396,7 @@ function ding_wayf_get_provider_attributes(&$simplesaml) {
 }
 
 /** Get authentication attributes
+ *
  * @param $wayf_data
  * @return array
  */
