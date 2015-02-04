@@ -59,7 +59,8 @@ function ding_wayf_accept() {
   // add an accept form if provider implements it
   if (ding_provider_implements('wayf', 'accept_form')) {
     $form = ding_provider_invoke('wayf', 'accept_form');
-    return drupal_render(drupal_get_form($form));
+    $render_array = drupal_get_form($form);
+    return drupal_render($render_array);
   }
 }
 
