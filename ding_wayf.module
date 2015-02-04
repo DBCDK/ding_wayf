@@ -132,7 +132,8 @@ function ding_wayf_form_user_login_alter(&$form, &$form_state) {
  */
 function ding_wayf_render_login_block() {
   $block = block_load('ding_wayf', 'login');
-  return drupal_render(_block_get_renderable_array(_block_render_blocks(array($block))));
+  $render_block = _block_get_renderable_array(_block_render_blocks(array($block)));
+  return drupal_render($render_block);
 }
 
 /**
