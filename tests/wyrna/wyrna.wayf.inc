@@ -133,6 +133,7 @@ function wyrna_accept_form_validate($form, &$form_state) {
                 ding_provider_invoke('wayf', 'bind', $name, $pass);
               }
               // pass key for email to login method
+              $notify_by_mail = new stdClass();
               $notify_by_mail->key = 'wayf_new_user';
               // if user wishes to change password later on he can do so
               ding_wayf_login($authentication_attributes,  $notify_by_mail);

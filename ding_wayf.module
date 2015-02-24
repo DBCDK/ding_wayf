@@ -59,7 +59,8 @@ function ding_wayf_accept() {
   // add an accept form if provider implements it
   if (ding_provider_implements('wayf', 'accept_form')) {
     $form = ding_provider_invoke('wayf', 'accept_form');
-    return drupal_render(drupal_get_form($form));
+    $render_array = drupal_get_form($form);
+    return drupal_render($render_array);
   }
 }
 
@@ -132,7 +133,8 @@ function ding_wayf_form_user_login_alter(&$form, &$form_state) {
  */
 function ding_wayf_render_login_block() {
   $block = block_load('ding_wayf', 'login');
-  return drupal_render(_block_get_renderable_array(_block_render_blocks(array($block))));
+  $render_block = _block_get_renderable_array(_block_render_blocks(array($block)));
+  return drupal_render($render_block);
 }
 
 /**
