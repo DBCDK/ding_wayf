@@ -17,7 +17,6 @@ class SimpleSAML_Auth_Simple {
     // @TODO handle errors
     $error = isset($_GET['error']) ? $_GET['error'] : FALSE;
     if ($error) {
-
       // handle this
     }
 
@@ -26,15 +25,6 @@ class SimpleSAML_Auth_Simple {
       $this->setAttributes($_POST);
       return TRUE;
     }
-
-    // @TODO is this ok - maybe use $_GET instead
-    /* if (isset($_GET['eduPersonTargetedID'])) {
-      // set attributes
-      $this->setAttribute('eduPersonTargetedID', $_GET['eduPersonTargetedID']);
-      $this->setAttribute('mail', $_GET['mail']);
-      return TRUE;
-      } */
-
     // user might already be logged in
     //check in $_SESSION
     else {
@@ -48,10 +38,6 @@ class SimpleSAML_Auth_Simple {
   }
 
   public function getAttributes() {
-
-
-    // @TODO .. if user is
-
     return isset($_SESSION['wayf_login']) ? $_SESSION['wayf_login'] : NULL;
   }
 
@@ -97,6 +83,8 @@ class SimpleSAML_Auth_Simple {
    */
   public function logout($url = NULL) {
 
+    $type = $_SESSION['wayf_login']['login_type'];
+    $idp = ($type == 'nem_id') ? 'nemlogin' : 'wayf';
     // unset session variables
     if (isset($_SESSION['wayf_login'])) {
       unset($_SESSION['wayf_login']);
@@ -113,11 +101,15 @@ class SimpleSAML_Auth_Simple {
     global $user;
     if (isset($user->mail))
       watchdog('wayf', 'Session closed for %name.', array('%name' => $user->mail));
+    watchdog('WAYF', $gateway . '?returnUrl=' . $base_url . '&op=logout', array(), WATCHDOG_ERROR);
     module_invoke_all('user_logout', $user);
     // Destroy the current session, and reset $user to the anonymous user.
     session_destroy();
     // redirect to gatewayf; pass returnUrl for simplesaml to redirect
-    header('Location:' . $gateway . '?returnUrl=' . $base_url . '&op=logout');
+
+
+
+    header('Location:' . $gateway . '?returnUrl=' . $base_url . '&op=logout' . '&idp=' . $idp);
     exit;
   }
 
