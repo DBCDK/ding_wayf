@@ -74,16 +74,6 @@ function ding_wayf_accept() {
  * @global type $user
  */
 function ding_wayf_init() {
-
-
-  $saml = ding_wayf_get_saml_connection();
-  if ($saml->isAuthenticated()) {
-    $wayf_data = $saml->getAttributes();
-
-    // get salt to use for hast
-    $config = variable_get('ding_wayf', NULL);
-  }
-
   if (isset($_SESSION['wayf_login'])) {
     if (isset($_GET['idp'])) {
       $loginType = $_GET['idp'];
