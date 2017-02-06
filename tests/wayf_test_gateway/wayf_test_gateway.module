@@ -12,6 +12,12 @@ function wayf_test_gateway_menu(){
   return $items;
 }
 
+function wayf_get_gateway_safety_hash(){
+  $hash = 'WAYF-test-CPRWAYF-test-ID';
+  $salt = '12345';
+  return  md5($hash . $salt);
+}
+
 
 function wayf_test_gateway_callback(){
   if (isset($_GET['op']) && $_GET['op'] == 'logout')
@@ -22,7 +28,7 @@ function wayf_test_gateway_callback(){
     <input id="wayf-submit" type='submit' value="accept"/>
     <input type="text" name='eduPersonTargetedID[]' value="WAYF-test-ID" />
     <input type="text" name='schacPersonalUniqueID[]' value="WAYF-test-CPR" />
-    <input type="text" name='hash[]' value="12345" />
+    <input type="text" name='hash[]' value="<?php print wayf_get_gateway_safety_hash();?>" />
     <input id="wayf-mail" type="text" name='mail[]' value="dummy@dbc.dk" />
   </form>
 
