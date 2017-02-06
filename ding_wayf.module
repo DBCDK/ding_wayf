@@ -187,15 +187,18 @@ function ding_wayf_redirect_login() {
       // get salt to use for hast
       $config = variable_get('ding_wayf', NULL);
 
-      $freeze = array($wayf_data['schacPersonalUniqueID'][0], $wayf_data['eduPersonTargetedID'][0]);
+      $freeze = array(
+        $wayf_data['schacPersonalUniqueID'][0],
+        $wayf_data['eduPersonTargetedID'][0]
+      );
       $hash = ding_wayf_safety_hash($freeze);
       $salt = $config['safetyhash'];
       $safetyhash = md5($hash . $salt);
+
       //compare with hash given from gatewayf - if no match abort
       if ($safetyhash !== $wayf_data['hash'][0]) {
         ding_wayf_user_logout();
       }
-
 
       $authentication_attributes = ding_wayf_get_authentication_attributes($wayf_data);
       //log user in
