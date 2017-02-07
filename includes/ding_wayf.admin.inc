@@ -41,6 +41,14 @@ function ding_wayf_admin_settings_form() {
     '#description' => t('Where to go for authentication via wayf',array(),array('context'=>'ding_wayf')),
     '#required' => TRUE,
   );
+
+  $form['ding_wayf']['safetyhash'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Salt to use for safety'),
+    '#default_value' => isset($default['safetyhash']) ? $default['safetyhash'] : 'some salt',
+    '#description' => t('Used for safety reasons',array(),array('context'=>'ding_wayf')),
+    '#required' => TRUE,
+  );
   
   // checkboxes wayf- and nemid-login
   $form['ding_wayf']['wayflogin'] = array(

@@ -97,6 +97,7 @@ class DingWyafTestCase extends DrupalWebTestCase {
       'ding_wayf[wayflogin]' => 1,
       'ding_wayf[nemlogin]' => 1,
       'ding_wayf[gatewayf]' => $this->getAbsoluteUrl('wayf/gateway'),
+      'ding_wayf[safetyhash]' => '12345',
     );
     $account = $this->drupalCreateUser(array('administer site configuration', 'configure wayf'));
     $this->drupalLogin($account);
@@ -111,6 +112,9 @@ class DingWyafTestCase extends DrupalWebTestCase {
   }
 
   private function testNotLoggedIn() {
+
+    $this->assertTrue(module_exists('ding_wayf'), 'DING WAYF IS ENABLED');
+
     $this->drupalGet('wayf/login', array('query' => array('idp' => 'wayf')));
     // TODO: Relative URL
     $this->assertUrl($this->getAbsoluteUrl('wayf/gateway') . '?returnUrl=' .$this->getAbsoluteUrl('/wayf/login') . '&idp=wayf', array(), t('User is redirected to gateway'));
@@ -167,6 +171,18 @@ class DingWayfUnitTestCase extends DrupalUnitTestCase {
     drupal_load('module', 'ding_wayf');
     module_load_include('install', 'ding_wayf');
     parent::setUp();
+  }
+
+  public function testSafetyHash() {
+    $data = array('FISK', 'HEST');
+    $expected = 'FISKHEST';
+    $result = ding_wayf_safety_hash($data);
+    $this->assertEqual($expected, $result, 'Parsed flat array');
+
+    $data = array(array(array('FISK')), 'HEST');
+    $expected = 'FISKHEST';
+    $result = ding_wayf_safety_hash($data);
+    $this->assertEqual($expected, $result, 'Parsed multidimensional array');
   }
 
   public function testExtractData() {

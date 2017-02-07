@@ -17,6 +17,7 @@ function ding_wayf_permission() {
   );
 }
 
+
 /**
  * Implements hook_menu().
  */
@@ -73,7 +74,6 @@ function ding_wayf_accept() {
  * @global type $user
  */
 function ding_wayf_init() {
-
   if (isset($_SESSION['wayf_login'])) {
     if (isset($_GET['idp'])) {
       $loginType = $_GET['idp'];
@@ -184,6 +184,22 @@ function ding_wayf_redirect_login() {
     if ($saml->isAuthenticated()) {
       $wayf_data = $saml->getAttributes();
 
+      // get salt to use for hast
+      $config = variable_get('ding_wayf', NULL);
+
+      $freeze = array(
+        $wayf_data['schacPersonalUniqueID'][0],
+        $wayf_data['eduPersonTargetedID'][0]
+      );
+      $hash = ding_wayf_safety_hash($freeze);
+      $salt = $config['safetyhash'];
+      $safetyhash = md5($hash . $salt);
+
+      //compare with hash given from gatewayf - if no match abort
+      if ($safetyhash !== $wayf_data['hash'][0]) {
+        ding_wayf_user_logout();
+      }
+
       $authentication_attributes = ding_wayf_get_authentication_attributes($wayf_data);
       //log user in
       ding_wayf_login($authentication_attributes);
@@ -200,6 +216,28 @@ function ding_wayf_redirect_login() {
     ding_wayf_redirect_user();
   }
 }
+
+
+/**
+ * Make a cachekey based on request parameters
+ *
+ * @param array $params
+ * @param string $ret
+ **/
+function ding_wayf_safety_hash($params, $ret = '') {
+  foreach ($params as $key => $value) {
+    //$ret .= $key;
+    if (is_array($value)) {
+      // recursive
+      $ret = ding_wayf_safety_hash($value, $ret);
+    }
+    else {
+      $ret .= $value;
+    }
+  }
+  return $ret;
+}
+
 
 /**
  * Helper function that redirectes the user to previous context or the fallback
@@ -236,17 +274,15 @@ function ding_wayf_user_delete($account) {
  */
 function ding_wayf_user_logout($account = NULL, $origin = NULL) {
   global $base_url;
-  //$simplesaml = variable_get('ding_wayf', array());
+
   $url = NULL;
   $saml = ding_wayf_get_saml_connection();
+
   if (!empty($saml)) {
     if ($saml->isAuthenticated()) {
       if (isset($_SESSION['accept_wayf'])) {
         // unset _SESSION variables
         unset($_SESSION['accept_wayf']);
-      }
-      if (isset($_SESSION['wayf_login'])) {
-        unset($_SESSION['wayf_login']);
       }
       if (isset($origin)) {
         $url = $base_url . '/' . $origin;
