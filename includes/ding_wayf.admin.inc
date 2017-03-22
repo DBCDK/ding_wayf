@@ -66,8 +66,63 @@ function ding_wayf_admin_settings_form() {
     '#default_value' => isset($default['nemlogin']) ? $default['nemlogin'] : 0,
   );
   
+  //*** Access platform ***//
+
+  $form['accessplatform']['hosturl'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Host URL access platform'),
+    '#default_value' => isset($default['host']) ? $default['host'] : 'https://stg.login.bib.dk',
+    '#description' => t('The name of the service provider (SP)'),
+    '#required' => TRUE,
+  );
+
+  $form['accessplatform']['loginpath'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Logon path'),
+    '#default_value' => isset($default['path']) ? $default['path'] : '/login',
+    '#description' => t('Login path'),
+    '#required' => TRUE,
+  );
+
+  $form['accessplatform']['clienttoken'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Token to use for access'),
+    '#default_value' => isset($default['clienttoken']) ? $default['clienttoken'] : '1d33e62469d0e10d9b5899492fd43170a55a308a',
+    '#description' => t('Token for accessing the access platform',array(),array('context'=>'access_platform')),
+    '#required' => TRUE,
+  );
+
+  $form['accessplatform']['clientsecret'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Client secret'),
+    '#default_value' => isset($default['clientsecret']) ? $default['clientsecret'] : 'c9de7bd38020b03a8067b015a0e9b6b0e1ed785578c241f36e3f79a0ad1c485e',
+    '#description' => t('Used for accessing a new token',array(),array('context'=>'access_platform')),
+    '#required' => TRUE,
+  );
   
- 
+  $form['accessplatform']['clientid'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Client id'),
+    '#default_value' => isset($default['clientid']) ? $default['clientid'] : '2a26eef2-b5eb-4710-8389-bd237e566654',
+    '#description' => t('Used for accessing a new token',array(),array('context'=>'access_platform')),
+    '#required' => TRUE,
+  );
+
+  $form['accessplatform']['clientplatform'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Client platform'),
+    '#default_value' => isset($default['clientplatform']) ? $default['clientplatform'] : 'http://platform-i01:3000/oauth/token',
+    '#description' => t('Used for accessing a new token',array(),array('context'=>'access_platform')),
+    '#required' => TRUE,
+  );
+
+  $form['accessplatform']['accessplatformlogin'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Adgangsplatform', array(), array('context'=>'accessplatformlogin')),
+    '#description' => t('Enable Adgangsplatform',array(),array('context'=>'access_platform')),
+    '#default_value' => isset($default['accessplatformlogin']) ? $default['accessplatformlogin'] : 0,
+  );
+
   return system_settings_form($form);
 }
 
