@@ -68,7 +68,7 @@ function ding_wayf_admin_settings_form() {
   
   //*** Access platform ***//
 
-  $form['accessplatform']['hosturl'] = array(
+  $form['ding_wayf']['hosturl'] = array(
     '#type' => 'textfield',
     '#title' => t('Host URL access platform'),
     '#default_value' => isset($default['host']) ? $default['host'] : 'https://stg.login.bib.dk',
@@ -76,7 +76,7 @@ function ding_wayf_admin_settings_form() {
     '#required' => TRUE,
   );
 
-  $form['accessplatform']['loginpath'] = array(
+  $form['ding_wayf']['loginpath'] = array(
     '#type' => 'textfield',
     '#title' => t('Logon path'),
     '#default_value' => isset($default['path']) ? $default['path'] : '/login',
@@ -84,7 +84,7 @@ function ding_wayf_admin_settings_form() {
     '#required' => TRUE,
   );
 
-  $form['accessplatform']['clienttoken'] = array(
+  $form['ding_wayf']['clienttoken'] = array(
     '#type' => 'textfield',
     '#title' => t('Token to use for access'),
     '#default_value' => isset($default['clienttoken']) ? $default['clienttoken'] : '1d33e62469d0e10d9b5899492fd43170a55a308a',
@@ -92,7 +92,7 @@ function ding_wayf_admin_settings_form() {
     '#required' => TRUE,
   );
 
-  $form['accessplatform']['clientsecret'] = array(
+  $form['ding_wayf']['clientsecret'] = array(
     '#type' => 'textfield',
     '#title' => t('Client secret'),
     '#default_value' => isset($default['clientsecret']) ? $default['clientsecret'] : 'c9de7bd38020b03a8067b015a0e9b6b0e1ed785578c241f36e3f79a0ad1c485e',
@@ -100,7 +100,7 @@ function ding_wayf_admin_settings_form() {
     '#required' => TRUE,
   );
   
-  $form['accessplatform']['clientid'] = array(
+  $form['ding_wayf']['clientid'] = array(
     '#type' => 'textfield',
     '#title' => t('Client id'),
     '#default_value' => isset($default['clientid']) ? $default['clientid'] : '2a26eef2-b5eb-4710-8389-bd237e566654',
@@ -108,7 +108,7 @@ function ding_wayf_admin_settings_form() {
     '#required' => TRUE,
   );
 
-  $form['accessplatform']['clientplatform'] = array(
+  $form['ding_wayf']['clientplatform'] = array(
     '#type' => 'textfield',
     '#title' => t('Client platform'),
     '#default_value' => isset($default['clientplatform']) ? $default['clientplatform'] : 'http://platform-i01:3000/oauth/token',
@@ -116,11 +116,11 @@ function ding_wayf_admin_settings_form() {
     '#required' => TRUE,
   );
 
-  $form['accessplatform']['accessplatformlogin'] = array(
+  $form['ding_wayf']['heimdallogin'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Adgangsplatform', array(), array('context'=>'accessplatformlogin')),
+    '#title' => t('Adgangsplatform', array(), array('context'=>'access_platform')),
     '#description' => t('Enable Adgangsplatform',array(),array('context'=>'access_platform')),
-    '#default_value' => isset($default['accessplatformlogin']) ? $default['accessplatformlogin'] : 0,
+    '#default_value' => isset($default['heimdallogin']) ? $default['heimdallogin'] : 0,
   );
 
   return system_settings_form($form);
