@@ -71,7 +71,7 @@ function ding_wayf_admin_settings_form() {
   $form['ding_wayf']['hosturl'] = array(
     '#type' => 'textfield',
     '#title' => t('Host URL access platform'),
-    '#default_value' => isset($default['host']) ? $default['host'] : 'https://stg.login.bib.dk',
+    '#default_value' => isset($default['host']) ? $default['host'] : 'https://login.bib.dk',
     '#description' => t('The name of the service provider (SP)'),
     '#required' => TRUE,
   );
@@ -89,7 +89,7 @@ function ding_wayf_admin_settings_form() {
     '#title' => t('Token to use for access'),
     '#default_value' => isset($default['clienttoken']) ? $default['clienttoken'] : '1d33e62469d0e10d9b5899492fd43170a55a308a',
     '#description' => t('Token for accessing the access platform',array(),array('context'=>'access_platform')),
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
 
   $form['ding_wayf']['clientsecret'] = array(
