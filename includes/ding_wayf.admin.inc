@@ -14,7 +14,7 @@ function ding_wayf_admin_settings_form() {
   $form['ding_wayf']['installdir'] = array(
     '#type' => 'textfield',
     '#title' => t('Simple SAML php installation directory'),
-    '#default_value' => $default['installdir'],
+    '#default_value' => isset($default['installdir']) ? $default['installdir'] : '',
     '#description' => t('Absolute path with no trailing slash to simple SAML installation.'),
     '#required' => FALSE,
   );
@@ -30,7 +30,7 @@ function ding_wayf_admin_settings_form() {
   $form['ding_wayf']['redirect'] = array(
     '#type' => 'textfield',
     '#title' => t('Redirect fallback URL'),
-    '#default_value' => $default['redirect'],
+    '#default_value' => isset($default['redirect']) ? $default['redirect'] : '',
     '#description' => t('Redirect to this fallback URL after login. This URL is only used if distination is not found. The token %uid is avaliable'),
     '#required' => TRUE,
   );
