@@ -10,10 +10,11 @@ function ding_wayf_admin_settings_form() {
     'redirect' => 'user/%uid/status',
   ));
 
+
   $form['ding_wayf']['installdir'] = array(
     '#type' => 'textfield',
     '#title' => t('Simple SAML php installation directory'),
-    '#default_value' => $default['installdir'],
+    '#default_value' => isset($default['installdir']) ? $default['installdir'] : '',
     '#description' => t('Absolute path with no trailing slash to simple SAML installation.'),
     '#required' => FALSE,
   );
@@ -29,11 +30,11 @@ function ding_wayf_admin_settings_form() {
   $form['ding_wayf']['redirect'] = array(
     '#type' => 'textfield',
     '#title' => t('Redirect fallback URL'),
-    '#default_value' => $default['redirect'],
+    '#default_value' => isset($default['redirect']) ? $default['redirect'] : '',
     '#description' => t('Redirect to this fallback URL after login. This URL is only used if distination is not found. The token %uid is avaliable'),
     '#required' => TRUE,
   );
-  
+
   $form['ding_wayf']['gatewayf'] = array(
     '#type' => 'textfield',
     '#title' => t('URL to wayf gateway'),
@@ -49,15 +50,15 @@ function ding_wayf_admin_settings_form() {
     '#description' => t('Used for safety reasons',array(),array('context'=>'ding_wayf')),
     '#required' => TRUE,
   );
-  
+
   // checkboxes wayf- and nemid-login
   $form['ding_wayf']['wayflogin'] = array(
     '#type' => 'checkbox',
     '#title' => t('Wayf login', array(), array('context'=>'ding_wayf')),
     '#description' => t('Enable wayflogin',array(),array('context'=>'ding_wayf')),
     '#default_value' => isset($default['wayflogin']) ? $default['wayflogin'] : 0,
-  );  
-  
+  );
+
 
   $form['ding_wayf']['nemlogin'] = array(
     '#type' => 'checkbox',
@@ -65,9 +66,56 @@ function ding_wayf_admin_settings_form() {
     '#description' => t('Enable Nemlogin',array(),array('context'=>'ding_wayf')),
     '#default_value' => isset($default['nemlogin']) ? $default['nemlogin'] : 0,
   );
-  
-  
- 
+
+  //*** Access platform ***//
+
+  $form['ding_wayf']['hosturl'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Host URL access platform'),
+    '#default_value' => isset($default['hosturl']) ? $default['hosturl'] : 'some login url',
+    '#description' => t('The name of the service provider (SP)'),
+    '#required' => TRUE,
+  );
+
+  $form['ding_wayf']['loginpath'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Logon path'),
+    '#default_value' => isset($default['path']) ? $default['path'] : '/login',
+    '#description' => t('Login path'),
+    '#required' => TRUE,
+  );
+
+  $form['ding_wayf']['clientsecret'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Client secret'),
+    '#default_value' => isset($default['clientsecret']) ? $default['clientsecret'] : 'some secret',
+    '#description' => t('Used for accessing a new token',array(),array('context'=>'access_platform')),
+    '#required' => TRUE,
+  );
+
+  $form['ding_wayf']['clientid'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Client id'),
+    '#default_value' => isset($default['clientid']) ? $default['clientid'] : 'some client id',
+    '#description' => t('Used for accessing a new token',array(),array('context'=>'access_platform')),
+    '#required' => TRUE,
+  );
+
+  $form['ding_wayf']['clientplatform'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Client platform'),
+    '#default_value' => isset($default['clientplatform']) ? $default['clientplatform'] : 'some access platform',
+    '#description' => t('Used for accessing a new token',array(),array('context'=>'access_platform')),
+    '#required' => TRUE,
+  );
+
+  $form['ding_wayf']['heimdallogin'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Adgangsplatform', array(), array('context'=>'access_platform')),
+    '#description' => t('Enable Adgangsplatform',array(),array('context'=>'access_platform')),
+    '#default_value' => isset($default['heimdallogin']) ? $default['heimdallogin'] : 0,
+  );
+
   return system_settings_form($form);
 }
 
@@ -80,7 +128,7 @@ function ding_wayf_admin_settings_form_validate($form, $form_state) {
   if( empty($wayf) && empty($nemlogin) ){
     form_set_error('wayflogin', t('Either check wayf, nemlogin or both.',array(),array('context' => 'ding_wayf')));
   }
-  
+
  /* if (!ding_wayf_check_simplesamlphp($form_state['values']['ding_wayf']['installdir'])) {
     form_set_error('installdir', t('Simple SAML php was not found at the location given.'));
   }*/
