@@ -349,18 +349,19 @@ function ding_wayf_check_simplesamlphp($path) {
  *   path to the image
  * @param $alt_text
  *   alt text for the image
- * @return array
- *   render array for drupal_render
+ * @return string
+ *   rendered array
  */
 function ding_wayf_get_logo($path, $alt_text) {
   $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
   $logo_path .= $path;
-  return array(
+  $image = array(
     '#theme' => 'image',
     '#path' => $logo_path,
     '#alt' => $alt_text,
     '#title' => 'login logo',
   );
+  return drupal_render($image);
 }
 
 /**
