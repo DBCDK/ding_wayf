@@ -344,7 +344,7 @@ function ding_wayf_check_simplesamlphp($path) {
 }
 
 /**
- * Get a render array for logo image
+ * Get logo image
  * @param $path
  *   path to the image
  * @param $alt_text
