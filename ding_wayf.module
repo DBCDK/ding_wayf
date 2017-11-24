@@ -121,20 +121,13 @@ function ding_wayf_login($authentication_attributes, $notify_by_mail = NULL) {
  * add wayf login block to form['actions']
  */
 function ding_wayf_form_user_login_alter(&$form, &$form_state) {
-  $form['actions']['wayf_login'] = array(
-    '#markup' => ding_wayf_render_login_block(),
-    '#weight' => 100,
-  );
-}
-
-/** \brief Custom render function for ding_wayf_login block
- *
- * @return html; the rendered block
- */
-function ding_wayf_render_login_block() {
-  $block = block_load('ding_wayf', 'login');
-  $render_block = _block_get_renderable_array(_block_render_blocks(array($block)));
-  return drupal_render($render_block);
+  $config = variable_get('ding_wayf', NULL);
+  if ($config['nemlogin']) {
+    $form['login_methods'][] = ding_wayf_get_nemlogin();
+  }
+  if ($config['wayflogin']) {
+    $form['login_methods'][] = ding_wayf_get_wayflogin();
+  }
 }
 
 /**
@@ -159,6 +152,7 @@ function ding_wayf_form_alter(&$form, $form_state, $form_id) {
           array_unshift($form['#validate'], $function);
         }
       }
+
       break;
     default:
       break;
@@ -322,7 +316,7 @@ function ding_wayf_extract_data($data, $field = FALSE) {
  * Gets a connection to simple saml php.
  *
  * @param string $sp
- * @return SimpleSAML_Auth_Simple
+ * @return SimpleSAML_Auth_Simple|bool
  */
 function ding_wayf_get_saml_connection($sp = NULL) {
   $simplesaml = variable_get('ding_wayf', array());
@@ -350,63 +344,118 @@ function ding_wayf_check_simplesamlphp($path) {
 }
 
 /**
- * Implements hook_block_info().
- *
- * @return array
+ * Get logo image
+ * @param $path
+ *   path to the image
+ * @param $alt_text
+ *   alt text for the image
+ * @return string
+ *   rendered array
  */
-function ding_wayf_block_info() {
-  return array(
-    'login' => array(
-      'info' => t('WAYF login'),
-    ),
+function ding_wayf_get_logo($path, $alt_text) {
+  $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
+  $logo_path .= $path;
+  $image = array(
+    '#theme' => 'image',
+    '#path' => $logo_path,
+    '#alt' => $alt_text,
+    '#title' => 'login logo',
   );
+  return drupal_render($image);
 }
 
 /**
- * Implements hook_block_view().
- *
- * @param string $delta
+ * Get a render array for nemlogin
+ * @return array
+ *   render array for drupal_render
+ */
+function ding_wayf_get_nemlogin(){
+  $wrapper = ding_wayf_login_wrapper();
+  $wrapper['helptxt'] = array(
+    '#type' => 'html_tag',
+    '#tag' => 'h2',
+    '#value' => t('NEMID_leadtext', array(), array('options'=>array('context' => 'ding_wayf'))),
+  );
+  $wrapper['link'] = ding_wayf_get_nemlogin_link();
+  return $wrapper;
+}
+
+/**
+ * Get a render array for wayf login
+ * @return array
+ *   Render array for drupal_render
+ */
+function ding_wayf_get_wayflogin(){
+  $wrapper = ding_wayf_login_wrapper();
+  $wrapper['helptxt'] = array(
+    '#type' => 'html_tag',
+    '#tag' => 'h2',
+    '#value' => t('WAYF_leadtext', array(), array('options'=>array('context' => 'ding_wayf'))),
+  );
+  $wrapper['link'] = ding_wayf_get_wayf_link();
+  return $wrapper;
+}
+
+/**
+ * Get a link for wayf login (with a logo)
+ * @return array
+ *  Render array for drupal_render
+ */
+function ding_wayf_get_wayf_link(){
+  $logo_path = '/img/in_use/wayf-logo.png';
+  $logo_alt_text_nemid = t('logo_alt_text_wayf', array(), array('context' => 'ding_wayf'));
+
+  $wrapper = ding_wayf_login_wrapper();
+  //$wrapper['#attributes'] = array('class'=>array('bibdk-login-method'));
+  $wrapper['link'] = array(
+    '#type' => 'link',
+    '#href' =>'wayf/login',
+    '#title' => ding_wayf_get_logo($logo_path, $logo_alt_text_nemid),
+    '#options' => array(
+      'html' => TRUE,
+      'attributes' => array('class' => 'wayflogin-logo'),
+      'query' => array('idp' => 'wayf', drupal_get_destination()),
+    ),
+  );
+
+  return $wrapper;
+}
+
+/**
+ * Get a link for nemlogin
+ * @return array
+ *   Render array for drupal_render
+ */
+function ding_wayf_get_nemlogin_link(){
+  $logo_path = '/img/in_use/nemid-logo.png';
+  $logo_alt_text_nemid = t('logo_alt_text_nemid', array(), array('context' => 'ding_wayf'));
+
+  $wrapper = ding_wayf_login_wrapper();
+  //$wrapper['#attributes'] = array('class'=>array('bibdk-login-method'));
+  $wrapper['link'] = array(
+    '#type' => 'link',
+    '#href' =>'wayf/login',
+    '#title' => ding_wayf_get_logo($logo_path, $logo_alt_text_nemid),
+    '#options' => array(
+      'html' => TRUE,
+      'attributes' => array('class' => array('nemlogin-logo')),
+      'query' => array('idp' => 'nemlogin', drupal_get_destination()),
+    ),
+  );
+
+  return $wrapper;
+}
+
+/**
+ * Get a wrapper for a login method
  * @return array
  */
-function ding_wayf_block_view($delta) {
-  $block = array('content' => '');
-  if ($delta == 'login') {
-    global $user;
-    // Only show login link for anon. users.
-    if ($user->uid == 0) {
-      $config = variable_get('ding_wayf', NULL);
-      $wayf = isset($config['wayflogin']) ? $config['wayflogin'] : FALSE;
-      $nemlogin = isset($config['nemlogin']) ? $config['nemlogin'] : FALSE;
-      if ($wayf or $nemlogin) {
-        $block['content'] .= '<div class="ding-wayf-logon-block"> <div class="ding-wayf-logoninfo">' . t('Log in to WAYF or NemId') . '</div>';
-      }
-      if ($wayf) {
-        $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
-        $logo_path .= '/img/in_use/wayf-logo.png';
-        $logo_alt_text_wayf = t('logo_alt_text_wayf', array(), array('context' => 'ding_wayf'));
-        $block['content'] .= l('<img src="' . $logo_path . '" alt="' . $logo_alt_text_wayf . '"/>', 'wayf/login', array(
-          'html' => TRUE,
-          'attributes' => array('class' => 'link-ding-wayf-wayf-login'),
-          'query' => array('idp' => 'wayf', drupal_get_destination())
-        ));
-      }
-      if ($nemlogin) {
-        $logo_path = base_path() . drupal_get_path('theme', $GLOBALS['theme']);
-        $logo_path .= '/img/in_use/nemid-logo.png';
-        $logo_alt_text_nemid = t('logo_alt_text_nemid', array(), array('context' => 'ding_wayf'));
-        $block['content'] .= l('<img src="' . $logo_path . '" alt="' . $logo_alt_text_nemid . '"/>', 'wayf/login', array(
-          'html' => TRUE,
-          'attributes' => array('class' => 'link-ding-wayf-wayf-login'),
-          'query' => array('idp' => 'nemlogin', drupal_get_destination())
-        ));
-      }
-      if ($wayf or $nemlogin) {
-        $block['content'] .= '</div>';
-      }
-    }
-  }
-
-  return $block;
+function ding_wayf_login_wrapper(){
+  $wrapper = array(
+    '#type' => 'container',
+    '#attributes' => array('class'=>array('bibdk-login-method')),
+  );
+  return $wrapper;
 }
 
 /** \brief get the valid idp's
