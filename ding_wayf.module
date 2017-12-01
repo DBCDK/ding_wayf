@@ -122,9 +122,9 @@ function ding_wayf_login($authentication_attributes, $notify_by_mail = NULL) {
  */
 function ding_wayf_form_user_login_alter(&$form, &$form_state) {
   $config = variable_get('ding_wayf', NULL);
-  if ($config['nemlogin']) {
+  /*if ($config['nemlogin']) {
     $form['login_methods'][] = ding_wayf_get_nemlogin();
-  }
+  }*/
   if ($config['wayflogin']) {
     $form['login_methods'][] = ding_wayf_get_wayflogin();
   }
