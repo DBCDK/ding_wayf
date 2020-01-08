@@ -272,7 +272,7 @@ class DingWayfRequirementsTestCase extends DrupalWebTestCase {
     return array(
       'name' => 'Ding WAYF requirements test',
       'description' => 'Test Ding WAYF requirements.',
-      'group' => 'Ding! - WAYF',
+      'group' => 'FIX ME' //'Ding! - WAYF',
     );
   }
 
