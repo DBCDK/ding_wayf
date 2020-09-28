@@ -1,5 +1,7 @@
 <?php
 
+define('DING_WAYF_BASE_URL', 'https://bibliotek.dk');
+
 /**
  * @file
  * Mock implementation of simpleSAML.
@@ -69,7 +71,7 @@ class SimpleSAML_Auth_Simple {
 
   public function requireAuth($idp = NULL) {
     global $base_url;
-    $home = $base_url . '/' . current_path();
+    $home = DING_WAYF_BASE_URL . '/' . current_path();
     $config = variable_get('ding_wayf');
     $gateway = $config['gatewayf'];
 
@@ -101,7 +103,7 @@ class SimpleSAML_Auth_Simple {
     global $user;
     if (isset($user->mail))
       watchdog('wayf', 'Session closed for %name.', array('%name' => $user->mail));
-    watchdog('WAYF', $gateway . '?returnUrl=' . $base_url . '&op=logout', array(), WATCHDOG_ERROR);
+    watchdog('WAYF', $gateway . '?returnUrl=' . DING_WAYF_BASE_URL . '&op=logout', array(), WATCHDOG_ERROR);
     module_invoke_all('user_logout', $user);
     // Destroy the current session, and reset $user to the anonymous user.
     session_destroy();
@@ -109,7 +111,7 @@ class SimpleSAML_Auth_Simple {
 
 
 
-    header('Location:' . $gateway . '?returnUrl=' . $base_url . '&op=logout' . '&idp=' . $idp);
+    header('Location:' . $gateway . '?returnUrl=' . DING_WAYF_BASE_URL . '&op=logout' . '&idp=' . $idp);
     exit;
   }
 

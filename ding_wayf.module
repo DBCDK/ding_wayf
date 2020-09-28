@@ -4,6 +4,7 @@
  * Delimiter for extracting a part of a field.
  */
 define('DING_WAYF_FIELD_DELIMITER', ':');
+define('DING_WAYF_BASE_URL', 'https://bibliotek.dk');
 
 /**
  * Implements hook_permission().
@@ -279,7 +280,7 @@ function ding_wayf_user_logout($account = NULL, $origin = NULL) {
         unset($_SESSION['accept_wayf']);
       }
       if (isset($origin)) {
-        $url = $base_url . '/' . $origin;
+        $url = DING_WAYF_BASE_URL . '/' . $origin;
       }
       // we pass simplesaml the url to return to -
       // you can pass simplesaml::logout an array of values ['ReturnTo', 'ReturnCallback'] etc.
