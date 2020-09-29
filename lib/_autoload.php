@@ -1,7 +1,5 @@
 <?php
 
-define('DING_WAYF_BASE_URL', 'https://bibliotek.dk');
-
 /**
  * @file
  * Mock implementation of simpleSAML.
