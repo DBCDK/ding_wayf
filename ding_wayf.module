@@ -4,7 +4,7 @@
  * Delimiter for extracting a part of a field.
  */
 define('DING_WAYF_FIELD_DELIMITER', ':');
-define('DING_WAYF_BASE_URL', 'https://bibliotek.dk');
+define('DING_WAYF_BASE_URL', 'https://old.bibliotek.dk');
 
 /**
  * Implements hook_permission().
